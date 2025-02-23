@@ -17,7 +17,9 @@ pipeline {
             steps {
                 script {
                     // Assuming you're using Maven, run the Maven build to create the JAR file
-                    sh "mvn clean install"  // This will build the JAR and place it in the target/ directory
+//                     sh "mvn clean install"  // This will build the JAR and place it in the target/ directory
+                    mvn clean install -DargLine="--add-opens=java.base/java.lang=ALL-UNNAMED"
+
                 }
             }
         }
