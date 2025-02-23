@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                echo "Start fetching code from repo"
-                git 'https://github.com/nvjprasad2020/aks-demo.git'
+                git branch: 'main', url: 'https://github.com/nvjprasad2020/aks-demo.git'
             }
         }
     }
