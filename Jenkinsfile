@@ -2,12 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "nvjprasad/aks-demo:${BUILD_ID}"  // Docker image name
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'  // Docker Hub credentials ID
-        KUBECONFIG = '/root/.kube/config'  // Path to kubeconfig for AKS
+        MAVEN_OPTS = "--add-opens=java.base/java.lang=ALL-UNNAMED"
+        BUILD_VERSION = "1.0.${BUILD_ID}"
+        DOCKER_IMAGE = "nvjprasad/aks-demo:${BUILD_VERSION}"
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
     }
 
     stages {
+        stage('Check Maven Version') {
+            steps {
+                script {
+                    sh 'mvn --version'  // Ensure the correct version is used
+                }
+            }
+        }
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/nvjprasad2020/aks-demo.git'
@@ -16,12 +24,7 @@ pipeline {
         stage('Build Maven Project and Docker Image') {
             steps {
                 script {
-                    // Build the Maven project and pass the necessary JVM options
-                    sh '''
-                     export MAVEN_OPTS="--add-opens=java.base/java.lang=ALL-UNNAMED"
-                     mvn clean install
-                    '''
-                    // Build Docker image after Maven build
+                    sh 'mvn clean install -U'  // Force dependency updates
                     sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
@@ -48,6 +51,7 @@ pipeline {
                         export KUBECONFIG=$KUBECONFIG_FILE
                         kubectl apply -f k8s/deployment.yaml
                         kubectl apply -f k8s/service.yaml
+                        kubectl get pods -n your-namespace  # Debug AKS pods
                         '''
                     }
                 }
@@ -57,7 +61,7 @@ pipeline {
 
     post {
         always {
-            cleanWs()  // Clean workspace after the build is complete
+            cleanWs()  // Clean workspace after build
         }
     }
 }
