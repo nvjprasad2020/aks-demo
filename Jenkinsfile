@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/nvjprasad2020/aks-demo.git'
+                git branch: 'main', url: 'https://github.com/nvjprasad2020/aks-demo.git'
             }
         }
         stage('Build Docker Image') {
