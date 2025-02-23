@@ -1,6 +1,9 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.9.6'  // This must match the name set in Jenkins Global Tool Configuration
+    }
     environment {
         MAVEN_OPTS = "--add-opens=java.base/java.lang=ALL-UNNAMED"
         BUILD_VERSION = "1.0.${BUILD_ID}"
