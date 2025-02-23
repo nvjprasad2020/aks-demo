@@ -18,7 +18,8 @@ pipeline {
                 script {
                     // Build the Maven project and pass the necessary JVM options
                     sh '''
-                        mvn clean install -DargLine="--add-opens=java.base/java.lang=ALL-UNNAMED"
+                     export MAVEN_OPTS="--add-opens=java.base/java.lang=ALL-UNNAMED"
+                     mvn clean install
                     '''
                     // Build Docker image after Maven build
                     sh "docker build -t $DOCKER_IMAGE ."
