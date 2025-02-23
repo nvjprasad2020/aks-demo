@@ -13,9 +13,18 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/nvjprasad2020/aks-demo.git'
             }
         }
+        stage('Build JAR') {
+            steps {
+                script {
+                    // Assuming you're using Maven, run the Maven build to create the JAR file
+                    sh "mvn clean install"  // This will build the JAR and place it in the target/ directory
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build the Docker image with the JAR file created in the previous step
                     sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
